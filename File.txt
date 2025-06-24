@@ -1,0 +1,1 @@
+/Users/jakedelvoye/Projects/3d/RoomScanningApp/RoomScanningApp/RoomCaptureScreen.swift:5:26 Type 'RoomCaptureCoordinator' does not conform to protocol 'NSCoding'

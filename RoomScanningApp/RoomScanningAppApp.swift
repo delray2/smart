@@ -6,12 +6,20 @@
 //
 
 import SwiftUI
+import RoomPlan
+import RealityKit
+import ARKit
 
 @main
 struct RoomScanningAppApp: App {
-    var body: some Scene {
+    @StateObject private var roomStorage = RoomStorage()
+    @StateObject private var deviceController = DeviceController()
+    
+    var body: some SwiftUI.Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(roomStorage)
+                .environmentObject(deviceController)
         }
     }
 }
