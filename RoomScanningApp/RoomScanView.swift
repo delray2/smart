@@ -9,6 +9,7 @@ import Metal
 struct RoomScanView: View {
     @StateObject private var scanCoordinator = RoomScanViewCoordinator()
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var roomStorage: RoomStorage
     
     @State private var showingInstructions = true
     @State private var showingScanComplete = false
@@ -21,6 +22,7 @@ struct RoomScanView: View {
         ZStack {
             // Camera view
             RoomCaptureView(coordinator: scanCoordinator)
+                .environmentObject(roomStorage)
                 .ignoresSafeArea()
             
             // Overlay UI

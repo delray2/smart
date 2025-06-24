@@ -297,7 +297,7 @@ struct EditRoomView: View {
         updatedRoom.description = roomDescription.isEmpty ? nil : roomDescription
         updatedRoom.updatedAt = Date()
         
-        RoomStorage.shared.updateRoom(updatedRoom)
+        roomStorage.updateRoom(updatedRoom)
         presentationMode.wrappedValue.dismiss()
     }
 }

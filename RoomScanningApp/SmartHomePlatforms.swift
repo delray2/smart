@@ -55,7 +55,7 @@ enum SmartHomePlatform: String, CaseIterable, Identifiable, Codable {
         case .irobot: return .red
         case .hubitat: return .green
         case .philipsHue: return .yellow
-        case .nest: return .orange DA51-2F74
+        case .nest: return .orange
         case .ecobee: return .blue
         case .ring: return .blue
         case .wyze: return .purple

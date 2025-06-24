@@ -12,6 +12,7 @@ struct DeviceDiscoveryView: View {
     @State private var selectedDevice: SmartDevice?
     @State private var selectedRoom: Room?
     @State private var showingRoomSelection = false
+    @State private var showSaveToast = false
     
     var body: some View {
         NavigationView {
@@ -49,12 +50,27 @@ struct DeviceDiscoveryView: View {
                         showingDevicePlacement = true
                     }
                 })
+                .environmentObject(roomStorage)
             }
         }
         .onAppear {
             // Check for existing devices and platforms on view appear
             checkExistingData()
         }
+        .overlay(
+            Group {
+                if showSaveToast {
+                    Text("Device saved")
+                        .font(.caption)
+                        .padding(8)
+                        .background(Color.black.opacity(0.7))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .transition(.opacity)
+                }
+            }
+            .padding(), alignment: .bottom
+        )
     }
     
     // MARK: - Platform Selection View
@@ -180,12 +196,12 @@ struct DeviceDiscoveryView: View {
     
     private func showRoomSelection(for device: SmartDevice) {
         // Get available rooms from storage
-        let availableRooms = RoomStorage.shared.rooms
+        let availableRooms = roomStorage.rooms
         
         if availableRooms.isEmpty {
             // Create a default room if none exist
             let defaultRoom = Room(name: "Living Room")
-            RoomStorage.shared.saveRoom(defaultRoom)
+            roomStorage.saveRoom(defaultRoom)
             selectedRoom = defaultRoom
             showingDevicePlacement = true
         } else if availableRooms.count == 1 {
@@ -202,13 +218,18 @@ struct DeviceDiscoveryView: View {
         var updatedRoom = room
         updatedRoom.devices.append(device)
         updatedRoom.updatedAt = Date()
-        
+
         // Save the updated room
-        RoomStorage.shared.updateRoom(updatedRoom)
-        
+        roomStorage.updateRoom(updatedRoom)
+
         // Add device to controller if not already present
         if !deviceController.allDevices.contains(where: { $0.id == device.id }) {
             deviceController.addDevice(device)
+        }
+
+        showSaveToast = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            showSaveToast = false
         }
     }
 }
@@ -347,7 +368,7 @@ struct PlatformDeviceRowView: View {
 struct RoomSelectionView: View {
     @Binding var selectedRoom: Room?
     let onRoomSelected: (Room) -> Void
-    @StateObject private var roomStorage = RoomStorage.shared
+    @EnvironmentObject var roomStorage: RoomStorage
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
