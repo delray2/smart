@@ -101,6 +101,7 @@ class RoomCaptureCoordinator: NSObject, ObservableObject, RoomCaptureSessionDele
     private var scanStartTime: Date?
     private var colorArray: [WallColor] = []
     private var colorsURL: URL?
+    var roomStorage: RoomStorage?
     
     private let minimumScanDuration: TimeInterval = 30.0 // 30 seconds minimum
     
@@ -168,7 +169,7 @@ class RoomCaptureCoordinator: NSObject, ObservableObject, RoomCaptureSessionDele
                     updatedRoom.scanData = scanData
                     updatedRoom.description = "Scanned room with \(scanData.walls.count) walls and \(scanData.objects.count) objects"
                     
-                    RoomStorage.shared.addRoom(updatedRoom)
+                    roomStorage?.addRoom(updatedRoom)
                     scanStatus = .completed
                     
                     print("Room saved successfully: \(updatedRoom.name) with scan data: \(updatedRoom.scanData != nil)")
@@ -182,7 +183,7 @@ class RoomCaptureCoordinator: NSObject, ObservableObject, RoomCaptureSessionDele
                     updatedRoom.scanData = scanData
                     updatedRoom.description = "Scanned room with \(scanData.walls.count) walls and \(scanData.objects.count) objects"
                     
-                    RoomStorage.shared.addRoom(updatedRoom)
+                    roomStorage?.addRoom(updatedRoom)
                     scanStatus = .completed
                 }
             }
@@ -365,6 +366,7 @@ class RoomCaptureCoordinator: NSObject, ObservableObject, RoomCaptureSessionDele
 // MARK: - Room Capture View
 struct RoomCaptureView: UIViewRepresentable {
     @ObservedObject var coordinator: RoomCaptureCoordinator
+    @EnvironmentObject var roomStorage: RoomStorage
     
     func makeUIView(context: Context) -> RoomPlan.RoomCaptureView {
         let captureView = RoomPlan.RoomCaptureView(frame: .zero)
@@ -375,6 +377,7 @@ struct RoomCaptureView: UIViewRepresentable {
         // Store references
         coordinator.roomCaptureSession = captureView.captureSession
         coordinator.roomCaptureView = captureView
+        coordinator.roomStorage = roomStorage
         
         // Configure and start the session for camera preview
         var configuration = RoomCaptureSession.Configuration()

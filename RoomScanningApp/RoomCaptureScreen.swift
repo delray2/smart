@@ -5,6 +5,7 @@ import RoomPlan
 struct RoomCaptureScreen: View {
     @StateObject private var captureCoordinator = RoomScanCoordinator()
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var roomStorage: RoomStorage
     
     @State private var showingInstructions = true
     @State private var showingScanComplete = false
@@ -15,6 +16,7 @@ struct RoomCaptureScreen: View {
         ZStack {
             // Camera view
             RoomCaptureView(coordinator: captureCoordinator)
+                .environmentObject(roomStorage)
                 .ignoresSafeArea()
             
             // Overlay UI

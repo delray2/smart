@@ -2,68 +2,8 @@ import SwiftUI
 import RoomPlan
 import RealityKit
 
-struct HomeTab: View {
-    @Binding var showingRoomCapture: Bool
-    var body: some View {
-        HomeView(showingRoomCapture: $showingRoomCapture)
-            .tabItem {
-                Image(systemName: "house")
-                Text("Home")
-            }
-            .tag(0)
-    }
-}
-
-struct ScanTab: View {
-    var body: some View {
-        RoomScanView()
-            .tabItem {
-                Image(systemName: "camera.viewfinder")
-                Text("Scan")
-            }
-            .tag(1)
-    }
-}
-
-struct DevicesTab: View {
-    var body: some View {
-        DeviceDiscoveryView()
-            .tabItem {
-                Image(systemName: "wifi")
-                Text("Devices")
-            }
-            .tag(2)
-    }
-}
-
-struct SettingsTab: View {
-    @ObservedObject var deviceController: DeviceController
-    var body: some View {
-        SettingsView(deviceController: deviceController)
-            .tabItem {
-                Image(systemName: "gear")
-                Text("Settings")
-            }
-            .tag(3)
-    }
-}
-
-struct MainTabView: View {
-    @Binding var selectedTab: Int
-    @Binding var showingRoomCapture: Bool
-    @ObservedObject var deviceController: DeviceController
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeTab(showingRoomCapture: $showingRoomCapture)
-            ScanTab()
-            DevicesTab()
-            SettingsTab(deviceController: deviceController)
-        }
-    }
-}
-
 struct ContentView: View {
-    @State private var selectedTab = 0
+    @AppStorage("selectedTab") private var selectedTab = 0
     @State private var showingRoomCapture = false
     @EnvironmentObject var roomStorage: RoomStorage
     @EnvironmentObject var deviceController: DeviceController

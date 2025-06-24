@@ -27,13 +27,11 @@ struct Room: Identifiable, Codable {
 
 // MARK: - Room Storage
 class RoomStorage: ObservableObject {
-    static let shared = RoomStorage()
-    
     @Published var rooms: [Room] = []
-    private let userDefaults = UserDefaults.standard
-    private let roomsKey = "saved_rooms"
-    
-    init() {
+    private let fileURL: URL
+
+    init(fileURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("rooms.json")) {
+        self.fileURL = fileURL
         loadRooms()
     }
     
@@ -61,15 +59,20 @@ class RoomStorage: ObservableObject {
     }
     
     private func loadRooms() {
-        if let data = userDefaults.data(forKey: roomsKey),
-           let decodedRooms = try? JSONDecoder().decode([Room].self, from: data) {
-            rooms = decodedRooms
+        do {
+            let data = try Data(contentsOf: fileURL)
+            rooms = try JSONDecoder().decode([Room].self, from: data)
+        } catch {
+            rooms = []
         }
     }
-    
+
     private func persistRooms() {
-        if let encoded = try? JSONEncoder().encode(rooms) {
-            userDefaults.set(encoded, forKey: roomsKey)
+        do {
+            let data = try JSONEncoder().encode(rooms)
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            print("Failed to save rooms: \(error)")
         }
     }
 }
@@ -293,9 +296,9 @@ struct RoomDimensions: Codable {
     }
 }
 
-extension SIMD4 {
+extension SIMD4 where Scalar == Float {
     var xyz: SIMD3<Float> {
-        return SIMD3<Float>(x as! Float, y as! Float, z as! Float)
+        SIMD3<Float>(x, y, z)
     }
 }
 
