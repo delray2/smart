@@ -3,7 +3,7 @@ import RoomPlan
 
 // MARK: - Room Capture Screen
 struct RoomCaptureScreen: View {
-    @StateObject private var captureCoordinator = RoomScanCoordinator()
+    @StateObject private var captureCoordinator = RoomCaptureCoordinator()
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var roomStorage: RoomStorage
     
@@ -33,10 +33,10 @@ struct RoomCaptureScreen: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            startCapture()
+            startScanning()
         }
         .onDisappear {
-            stopCapture()
+            stopScanning()
         }
         .sheet(isPresented: $showingInstructions) {
             CaptureInstructionsView {
@@ -232,20 +232,20 @@ struct RoomCaptureScreen: View {
     }
     
     // MARK: - Helper Methods
-    private func startCapture() {
-        captureCoordinator.startCapture()
+    private func startScanning() {
+        captureCoordinator.startScanning()
     }
-    
-    private func stopCapture() {
-        captureCoordinator.stopCapture()
+
+    private func stopScanning() {
+        captureCoordinator.stopScanning()
     }
-    
+
     private func startScan() {
-        captureCoordinator.startScan()
+        captureCoordinator.startScanning()
     }
-    
+
     private func stopScan() {
-        captureCoordinator.stopScan()
+        captureCoordinator.stopScanning()
     }
     
     private func saveScan() {
