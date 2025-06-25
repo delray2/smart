@@ -231,11 +231,11 @@ struct RoomScanView: View {
     }
     
     private func startScan() {
-        scanCoordinator.startScan()
+        scanCoordinator.startScanning()
     }
-    
+
     private func stopScan() {
-        scanCoordinator.stopScan()
+        scanCoordinator.stopScanning()
     }
     
     private func resetScan() {
@@ -282,27 +282,11 @@ struct QualityIndicator: View {
 }
 
 // MARK: - Room Scan Coordinator
-class RoomScanViewCoordinator: RoomScanCoordinator {
-    // Remove fake progress and quality properties since we're using real RoomPlan data
-    
-    override func startScan() {
-        // Just start the capture, don't fake progress
-        startCapture()
-    }
-    
-    override func stopScan() {
-        // Stop the capture
-        stopCapture()
-    }
-    
+class RoomScanViewCoordinator: RoomCaptureCoordinator {
     func resetScan() {
-        // Stop and restart
-        stopCapture()
+        stopScanning()
         scanStatus = .ready
-        capturedRoom = nil
     }
-    
-    // Remove all fake timer and quality metric methods
 }
 
 // MARK: - Scan Instructions View
